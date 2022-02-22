@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from .forms import RegistrationForm,LoginForm,HomepageForm
+from forms import RegistrationForm,LoginForm,DashboardForm
 
 app=Flask(__name__)
 
@@ -28,9 +28,9 @@ def get_db_connection():
         return render_template("account.html",title='Account')
 '''
 @app.route('/')
-@app.route('/homepage', methods=['POST','GET'])
+@app.route('/dashboard', methods=['POST','GET'])
 def homepage():
-    form = HomepageForm()
+    form = DashboardForm()
     return render_template('homepage.html',title='Homepage',form=form)
 
 @app.route('/register', methods=['POST','GET'])
@@ -45,27 +45,28 @@ def register():
         cur.execute(sql)
         conn.commit()
         flash(f'Account created for {form.username.data}', category='success')
-        return redirect(url_for('homepage'))
+        return redirect(url_for('login'))
     return render_template('register.html',title='Register',form=form)
 
 @app.route('/login', methods=['POST','GET'])
-def homeq():
+def login():
     conn=get_db_connection()
-    cur=conn.cursor
+    cur=conn.cursor()
     form=LoginForm()
     if form.validate_on_submit():
+        print("hi")
         user_email=form.email.data
         user_pwd=form.password.data
         cur.execute('SELECT password from users where emailid={};'.format(user_email))
-        pwd=cur.fetchone
+        pwd=cur.fetchone()
         if(pwd==None):
            flash(f'Login unsuccessful for (form.username.data)', category='danger')
         else:
          if pwd==user_pwd:
             flash(f'Login successful for (form.username.data)', category="success")
-            return redirect (url_for('account'))
+            return redirect(url_for('homepage'))
          else:
            flash(f'Login unsuccessful for (form.username.data)', category='danger')
-    return render_template('login.html',title='Login', form='form')
+    return render_template('login.html',title='Login', form=form)
 if __name__ == "__main__":
     app.run(debug=True)
