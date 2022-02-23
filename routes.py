@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from .forms import RegistrationForm,LoginForm,DashboardForm
+from forms import RegistrationForm,LoginForm,DashboardForm
 
 app=Flask(__name__)
 
@@ -29,9 +29,9 @@ def get_db_connection():
 '''
 @app.route('/')
 @app.route('/dashboard', methods=['POST','GET'])
-def homepage():
+def dashboard():
     form = DashboardForm()
-    return render_template('homepage.html',title='Homepage',form=form)
+    return render_template('dashboard.html',title='Dashboard',form=form)
 
 @app.route('/register', methods=['POST','GET'])
 def register():
@@ -68,7 +68,7 @@ def login():
         else:
          if pwd[0]==user_pwd:
             flash(f'Login successful for (form.username.data)', category="success")
-            return redirect(url_for('homepage'))
+            return redirect(url_for('dashboard'))
          else:
            flash(f'Login unsuccessful for (form.username.data)', category='danger')
     return render_template('login.html',title='Login', form=form)
