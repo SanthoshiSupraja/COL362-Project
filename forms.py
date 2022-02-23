@@ -20,3 +20,8 @@ class LoginForm(FlaskForm):
     email = StringField (label='Email',validators=[DataRequired(), Email()])
     password = PasswordField (label='Password', validators=[DataRequired(), Length (min=6,max=16)])
     submit =SubmitField(label='Login')
+
+class HomepageForm(FlaskForm):
+    email = StringField (label='Email', validators=[DataRequired(), Email()])
+    password = PasswordField (label='Password', validators=[DataRequired(), Length (min=6,max=16)])
+    submit =SubmitField(label='Login')
