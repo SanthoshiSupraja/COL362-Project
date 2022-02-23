@@ -47,7 +47,7 @@ def register():
         conn.commit()
         flash(f'Account created for {form.username.data}', category='success')
         return redirect(url_for('login'))
-    return render_template('register.html',title='Register',form=form)
+    return render_template('register.html',title='Sign Up',form=form)
 
 @app.route('/login', methods=['POST','GET'])
 def login():
