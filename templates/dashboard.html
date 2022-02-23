@@ -29,7 +29,18 @@
     </ul>
 </nav>
 <script src="{{url_for('static',filename = 'main.js')}}"></script>
-{% endblock content %} {% block contentI%}
+{% endblock content %} {% block contentC%}
+<div class="card text-center">
+    <h5 class="card-header">Signup Today!</h5>
+    <div class="card-body">
+        <h6 class="card-title">Music you need at all times!!</h6>
+        <p class="card-text">10M+ Tracks</p>
+        <p class="card-text">10K+ Artists</p>
+        <p class="card-text">100K+ Albums</p>
+        <a href="{{url_for('register')}}" class="btn btn-primary">SignUp</a>
+    </div>
+</div>
+{%endblock contentC %}{% block contentI%}
 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
