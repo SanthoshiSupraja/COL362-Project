@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm
+from .forms import RegistrationForm,LoginForm,DashboardForm
 
 app=Flask(__name__)
 
@@ -38,6 +38,7 @@ def register():
     conn=get_db_connection()
     cur=conn.cursor()
     form = RegistrationForm()
+    #print(form.validate_on_submit())
     if form.validate_on_submit():
         user_email=form.email.data
         user_pwd=form.password.data
@@ -53,16 +54,19 @@ def login():
     conn=get_db_connection()
     cur=conn.cursor()
     form=LoginForm()
+    #print(form.validate_on_submit())
     if form.validate_on_submit():
-        print("hi")
+        #print("hello")
         user_email=form.email.data
         user_pwd=form.password.data
-        cur.execute('SELECT password from users where emailid={};'.format(user_email))
+        sql="SELECT password from users where emailid='{}';".format(user_email)
+        cur.execute(sql)
         pwd=cur.fetchone()
+        #print(pwd[0])
         if(pwd==None):
            flash(f'Login unsuccessful for (form.username.data)', category='danger')
         else:
-         if pwd==user_pwd:
+         if pwd[0]==user_pwd:
             flash(f'Login successful for (form.username.data)', category="success")
             return redirect(url_for('homepage'))
          else:
