@@ -22,5 +22,5 @@ class LoginForm(FlaskForm):
     submit =SubmitField(label='Login')
 
 class HomepageForm(FlaskForm):
-    search = StringField (label='search', validators=[DataRequired(), Email()])
-    submit =SubmitField(label='Login')
+    search = StringField (label='search', validators=[DataRequired()])
+    submit =SubmitField(label='search')
