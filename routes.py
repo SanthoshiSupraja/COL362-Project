@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm
+from .forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm
 
 app=Flask(__name__)
 
@@ -74,7 +74,20 @@ def login():
     return render_template('login.html',title='Login', form=form)
 @app.route('/homepage', methods=['POST','GET'])
 def homepage():
+    conn=get_db_connection()
+    cur=conn.cursor()
     form = HomepageForm()
+    print("home")
+    print(form.validate_on_submit())
+    if form.validate_on_submit():
+        print("page")
+        search_key=form.search;
+        sql_artists="SELECT name, followers from artists where name like %'{}'%".format(sql_key)
+        sql_albums="SELECT albums.name , artists.name , albums.name from public.albums join public.artists on albums.artists_id = artists.id where album.name like %'{}'%".format(sql_key)
+        sql_tracks="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on tracks.artists_id = artists.id where tracks.name like %'{}'%".format(sql_key)
+        cur.execute(sql_artists)
+        data=cur.fetchone()
+        print(data[0])
     return render_template('homepage.html',title='Dashboard',form=form)
 if __name__ == "__main__":
     app.run(debug=True)
