@@ -44,10 +44,14 @@
         </form>
     </div>
 </nav>
-{% endblock content %} {% block contentS %} {% for track in tracks %}
-<div class="card text-white bg-dark mb-3" style="width: 18rem;" style="height: 5rem;">
-    <div class="card-body1">
-        <a href="#" class="btn btn-secondary">{{track[1]}}</a>
+{% endblock content %} {% block contentS %}
+<div class="card-group">
+    {% for track in tracks %}
+    <div class="card text-white bg-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="#" class="btn btn-secondary">{{track[1]}}</a>
+        </div>
     </div>
+    {% endfor%}
 </div>
-{% endfor%} {% endblock contentS %}
+{% endblock contentS %}
