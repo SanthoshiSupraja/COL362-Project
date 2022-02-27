@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm
+from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm
 
 app=Flask(__name__)
 
@@ -77,7 +77,7 @@ def login():
 def artistlogin():
     conn=get_db_connection()
     cur=conn.cursor()
-    form=LoginForm()
+    form=artistLoginForm()
     if form.validate_on_submit():
         user_name = form.name.data
     return render_template('artistlogin.html',title='Login', form=form)
