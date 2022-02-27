@@ -1,4 +1,4 @@
-{% extends 'homepage.html'%} {% block content %}
+{% extends 'layouts.html'%}{% block content %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Euphony</a>
@@ -44,14 +44,50 @@
         </form>
     </div>
 </nav>
-{% endblock content %} {% block contentS %} {% for track in tracks %}
-<div class="card" style="width: 18rem;">
-    <div class="card-body1">
-        <a href="#" class="tracks">track[0][1]</a>
-        <a href="#" class="card-link">Another link</a>
+{% endblock content %} {% block contentS %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Tracks</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for track in tracks %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="#" class="btn btn-secondary">{{track[1]}}</a>
+        </div>
     </div>
+    {% endfor%}
 </div>
-<div class="tracks">
-    {{ track[0]}}---
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Albums</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for album in albums %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="#" class="btn btn-secondary">{{album[0]}}</a>
+        </div>
+    </div>
+    {% endfor%}
 </div>
-{% endfor%} {% endblock contentS %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Artists</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for artist in artists %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="#" class="btn btn-secondary">{{artist[0]}}</a>
+        </div>
+    </div>
+    {% endfor%}
+</div>
+{% endblock contentS %}
