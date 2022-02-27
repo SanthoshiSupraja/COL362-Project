@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from .forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm
+from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm
 
 app=Flask(__name__)
 
@@ -148,7 +148,7 @@ def homepage():
         print("tracks: ")
         print(tracks)
         return render_template('search.html',form=form,artists = artists,albums=albums,tracks=tracks)
-    return render_template('homepage.html',title='Homepage',form=form,artists = artists,albums=albums,tracks=tracks)
+    return render_template('homepage.html',title='Homepage',form=form,artists = artists,albums=albums,tracks=tracks,famous_artists = famous_artists,new_releases=new_releases,popular_tracks=popular_tracks,acousticness=acousticness,danceability=danceability,liveness=liveness,loudness=loudness)
 
 @app.route('/artisthomepage', methods=['POST','GET'])
 def artisthomepage():
