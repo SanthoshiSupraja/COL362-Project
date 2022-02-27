@@ -30,3 +30,7 @@
     column-gap: 40px;
     font-family: Bradley Hand, cursive;
 }
+
+.card text-white bg-dark mb-3 {
+    height: 10px;
+}

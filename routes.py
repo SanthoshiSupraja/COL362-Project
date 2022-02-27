@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from .forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm
+from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm
 
 app=Flask(__name__)
 
@@ -77,6 +77,9 @@ def homepage():
     conn=get_db_connection()
     cur=conn.cursor()
     form = HomepageForm()
+    artists = []
+    albums = []
+    tracks = []
     if form.validate_on_submit():
         #print(form.search.data)
         search_key=form.search.data
@@ -85,17 +88,21 @@ def homepage():
         sql_albums="SELECT albums.name , artists.name , albums.name from albums join artists on albums.artist_id = artists.id where albums.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
         sql_tracks="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on substring(tracks.artists_id, 3, LENGTH(tracks.artists_id)-4) = artists.id where tracks.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
         cur.execute(sql_artists)
-        data=cur.fetchall()
+        artists = cur.fetchall()
         print("artists: ")
-        print(data)
+        print(artists)
         cur.execute(sql_albums)
-        data=cur.fetchall()
+        albums=cur.fetchall()
         print("albums: ")
-        print(data)
+        print(albums)
         cur.execute(sql_tracks)
-        data=cur.fetchall()
+        tracks=cur.fetchall()
         print("tracks: ")
-        print(data)
-    return render_template('homepage.html',title='Dashboard',form=form)
+        print(tracks)
+        #return redirect(url_for('search'))
+    return render_template('homepage.html',title='Homepage',form=form,artists = artists,albums=albums,tracks=tracks)
+#@app.route('/search', methods=['POST','GET'])
+#def search():
+#    return render_template('search.html',title='search')
 if __name__ == "__main__":
     app.run(debug=True)

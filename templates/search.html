@@ -1,4 +1,4 @@
-{% extends 'layouts.html'%} {% block content %}
+{% extends 'homepage.html'%} {% block content %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Euphony</a>
@@ -45,9 +45,13 @@
     </div>
 </nav>
 {% endblock content %} {% block contentS %} {% for track in tracks %}
-<div class="card text-white bg-dark mb-3" style="width: 18rem;" style="height: 5rem;">
+<div class="card" style="width: 18rem;">
     <div class="card-body1">
-        <a href="#" class="btn btn-secondary">{{track[1]}}</a>
+        <a href="#" class="tracks">track[0][1]</a>
+        <a href="#" class="card-link">Another link</a>
     </div>
+</div>
+<div class="tracks">
+    {{ track[0]}}---
 </div>
 {% endfor%} {% endblock contentS %}
