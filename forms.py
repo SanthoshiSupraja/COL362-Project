@@ -21,6 +21,10 @@ class LoginForm(FlaskForm):
     password = PasswordField (label='Password', validators=[DataRequired(), Length (min=6,max=16)])
     submit =SubmitField(label='Login')
 
+class artistLoginForm(FlaskForm):
+    name = StringField(label='name', validators=[DataRequired()])
+    submit =SubmitField(label='Login')
+
 class HomepageForm(FlaskForm):
     search = StringField (label='search', validators=[DataRequired()])
     submit =SubmitField(label='search')

@@ -72,6 +72,15 @@ def login():
          else:
            flash(f'Login unsuccessful for (form.username.data)', category='danger')
     return render_template('login.html',title='Login', form=form)
+
+@app.route('/login', methods=['POST','GET'])
+def artistlogin():
+    conn=get_db_connection()
+    cur=conn.cursor()
+    form=LoginForm()
+    if form.validate_on_submit():
+        user_name = form.name.data
+    return render_template('artistlogin.html',title='Login', form=form)
 @app.route('/homepage', methods=['POST','GET'])
 def homepage():
     conn=get_db_connection()
