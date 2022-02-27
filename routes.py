@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm
+from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artistshomepageForm
 
 app=Flask(__name__)
 
@@ -86,7 +86,9 @@ def artistlogin():
         if(len(check)>0):
             print(check[0])
             flash(f'Login successful for (form.username.data)', category="success")
-            return redirect(url_for('artisthomepage'))
+            return redirect(url_for('artisthomepage', user_name=user_name))
+        else:
+            flash(f'Login unsuccessful for (form.username.data), artist does not exist', category="danger")
     return render_template('artistlogin.html',title='Login', form=form)
 @app.route('/homepage', methods=['POST','GET'])
 def homepage():
@@ -117,12 +119,70 @@ def homepage():
         print(tracks)
         #return redirect(url_for('search'))
     return render_template('homepage.html',title='Homepage',form=form,artists = artists,albums=albums,tracks=tracks)
-@app.route('/artisthomepage', methods=['POST','GET']) 
+
+@app.route('/artisthomepage', methods=['POST','GET'])
 def artisthomepage():
-    form = artisthomepageForm()
+    conn=get_db_connection()
+    cur=conn.cursor()
+    user_name=request.args['user_name']
+    artist_id="select id from artists where name='{}'".format(user_name)
+    sql_albums= """select albums.name,albums.total_tracks,albums.album_type,substring(albums.release_date,1,4) from artists join albums on albums.artist_id=artists.id
+                 Where artists.name='{}'
+                 Order by substring(albums.release_date,1,4) desc
+                 Limit 5""".format(user_name)
+    cur.execute(sql_albums)
+    albums=cur.fetchall()
+    print("albums: ")
+    print(albums)
+    form=artisthomepageForm()
+    #should add search
+    '''
+    form=CreateAlbum()
+    if(form.validate_on_submit()):
+        #(type, artist_id, name, release_date, total_tracks, track_name_prev)
+        album_type=form.album_type.data
+        name=form.name.data
+        release_date=form.release_date.data
+        release_date=form.release_date.data
+        total_tracks=form.total_tracks.data
+        track_name_prev=form.track_name_prev.data
+
+        sql_insalbum="INSERT INTO albums (album_type, artist_id, name, release_date, total_tracks, track_name_prev) VALUES (album_type, artist_id, name, release_date, total_tracks, track_name_prev)"
+        cur.execute(sql_insalbum)
+        cur.commit()
+    '''
     return render_template('artisthomepage.html',title='ArtistHomepage',form=form)
-#@app.route('/search', methods=['POST','GET'])
-#def search():
+    #return render_template('homepage.html',title='Homepage')#,form=form,artists = artists,albums=albums,tracks=tracks)
+@app.route('/artistclick', methods=['POST','GET'])
+def artistclick():
+    conn=get_db_connection()
+    cur=conn.cursor()
+    user_name=request.args['user_name']
+    artist_id="select id from artists where name='{}'".format(user_name)
+    sql_albums= """select albums.name,albums.total_tracks,albums.album_type,substring(albums.release_date,1,4) from artists join albums on albums.artist_id=artists.id
+                 Where artists.name='{}'
+                 Order by substring(albums.release_date,1,4) desc
+                 Limit 5""".format(user_name)
+    cur.execute(sql_albums)
+    albums=cur.fetchall()
 #    return render_template('search.html',title='search')
+@app.route('/albumclick', methods=['POST','GET'])
+def albumclick():
+    conn=get_db_connection()
+    cur=conn.cursor()
+    album=request.args['album_id']
+    sql_details1="select * from tracks where name='{}'".format(album) #album details
+    sql_details2="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on substring(tracks.artists_id, 3, LENGTH(tracks.artists_id)-4) = artists.id where tracks.albums_id='{}' order by artists.followers desc limit 10".format(album)
+@app.route('/trackclick', methods=['POST','GET'])
+def trackclick():
+    conn=get_db_connection()
+    cur=conn.cursor()
+    track=request.args['track_name']
+    album=request.args['album_id']
+    sql_details= "select * from tracks where name='{}' and album_id='{}'".format(track,album)
+    cur.execute(sql_details)
+    details=cur.fetchall()
+    print(details[0])
+  return #trackclick.html
 if __name__ == "__main__":
     app.run(debug=True)
