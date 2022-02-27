@@ -86,7 +86,9 @@ def artistlogin():
         if(len(check)>0):
             print(check[0])
             flash(f'Login successful for (form.username.data)', category="success")
-            return redirect(url_for('homepage'))
+            return redirect(url_for('artisthomepage', user_name=user_name))
+        else:
+            flash(f'Login unsuccessful for (form.username.data), artist does not exist', category="danger")
     return render_template('artistlogin.html',title='Login', form=form)
 @app.route('/homepage', methods=['POST','GET'])
 def homepage():
@@ -117,6 +119,22 @@ def homepage():
         print(tracks)
         #return redirect(url_for('search'))
     return render_template('homepage.html',title='Homepage',form=form,artists = artists,albums=albums,tracks=tracks)
+
+@app.route('/artisthomepage', methods=['POST','GET'])
+def artisthomepage():
+    conn=get_db_connection()
+    cur=conn.cursor()
+    user_name=request.args['user_name']
+    sql_albums= """select albums.name,albums.total_tracks,albums.album_type,substring(albums.release_date,1,4) from artists join albums on albums.artist_id=artists.id
+                 Where artists.name='{}'
+                 Order by substring(albums.release_date,1,4) desc
+                 Limit 5""".format(user_name)
+    cur.execute(sql_albums)
+    albums=cur.fetchall()
+    print("albums: ")
+    print(albums)
+    return
+    #return render_template('homepage.html',title='Homepage')#,form=form,artists = artists,albums=albums,tracks=tracks)
 #@app.route('/search', methods=['POST','GET'])
 #def search():
 #    return render_template('search.html',title='search')
