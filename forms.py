@@ -28,3 +28,6 @@ class artistLoginForm(FlaskForm):
 class HomepageForm(FlaskForm):
     search = StringField (label='search', validators=[DataRequired()])
     submit =SubmitField(label='search')
+class artisthomepageForm(FlaskForm):
+    search = StringField (label='search', validators=[DataRequired()])
+    submit =SubmitField(label='search')
