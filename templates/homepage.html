@@ -26,66 +26,106 @@
                         <li><a class="dropdown-item" href="#">Something else here</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
             </ul>
         </div>
         <form method="POST" action="">
             {{form.hidden_tag()}}
-            <fieldset>
-                <div class="form-group">
-                    {{form.search(class="form-control form-control-lg")}}
-                </div>
-            </fieldset>
-            <div class="field-group me-2">
-                {{form.submit(class = 'btn btn-primary')}}
+            <div class="form_wrapper">
+                {{form.search(class="form-control mr-sm-2")}}
+            </div>
+            <div class="form_wrapper">
+                {{form.submit(class = 'btn btn-outline-success my-2 my-sm-0')}}
             </div>
         </form>
     </div>
 </nav>
 {% endblock content %} {% block contentS %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Tracks</a>
+    <a class="navbar-brand" href="#">New releases</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 </nav>
 <div class="card-group">
-    {% for track in tracks %}
+    {% for newreleases in new_releases %}
     <div class="card border-dark mb-3" style="width: 18rem;">
         <div class="card-body1">
-            <a href="#" class="btn btn-secondary">{{track[1]}}</a>
+            <a href="#" class="btn btn-secondary">{{newreleases[0]}}</a>
         </div>
     </div>
     {% endfor%}
 </div>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Albums</a>
+    <a class="navbar-brand" href="#">Famous artists</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 </nav>
 <div class="card-group">
-    {% for album in albums %}
+    {% for famousartist in famous_artists %}
     <div class="card border-dark mb-3" style="width: 18rem;">
         <div class="card-body1">
-            <a href="#" class="btn btn-secondary">{{album[0]}}</a>
+            <a href="#" class="btn btn-secondary">{{famousartist[0]}}</a>
         </div>
     </div>
     {% endfor%}
 </div>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Artists</a>
+    <a class="navbar-brand" href="#">Popular tracks</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 </nav>
 <div class="card-group">
-    {% for artist in artists %}
+    {% for populartrack in popular_tracks %}
     <div class="card border-dark mb-3" style="width: 18rem;">
         <div class="card-body1">
-            <a href="#" class="btn btn-secondary">{{artist[0]}}</a>
+            <a href="#" class="btn btn-secondary">{{populartrack[1]}}</a>
+        </div>
+    </div>
+    {% endfor%}
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Chill vibes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for vibe in acousticness %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="#" class="btn btn-secondary">{{vibe[0]}}</a>
+        </div>
+    </div>
+    {% endfor%}
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Best Dance music</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for dm in danceability %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="#" class="btn btn-secondary">{{dm[0]}}</a>
+        </div>
+    </div>
+    {% endfor%}
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Masssss</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for ld in loudness %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="#" class="btn btn-secondary">{{ld[0]}}</a>
         </div>
     </div>
     {% endfor%}
