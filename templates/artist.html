@@ -41,22 +41,7 @@
 </nav>
 {% endblock content %} {% block contentS %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Tracks</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-</nav>
-<div class="card-group">
-    {% for track in tracks %}
-    <div class="card border-dark mb-3" style="width: 18rem;">
-        <div class="card-body1">
-            <a href="{{url_for('trackclick',c=track[1])}}" class="btn btn-secondary">{{track[1]}}</a>
-        </div>
-    </div>
-    {% endfor%}
-</div>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Albums</a>
+    <a class="navbar-brand" href="#">Artist name:{{user_name}}</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -65,22 +50,10 @@
     {% for album in albums %}
     <div class="card border-dark mb-3" style="width: 18rem;">
         <div class="card-body1">
-            <a href="{{url_for('albumclick',b=album[0])}}" class="btn btn-secondary">{{album[0]}}</a>
+            <a href="#" class="btn btn-secondary">{{album[0]}}</a>
         </div>
-    </div>
-    {% endfor%}
-</div>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Artists</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-</nav>
-<div class="card-group">
-    {% for artist in artists %}
-    <div class="card border-dark mb-3" style="width: 18rem;">
-        <div class="card-body1">
-            <a href="{{url_for('artistclick',a=artist[0])}}" class="btn btn-secondary">{{artist[0]}}</a>
+        <div class="card-footer">
+            <small class="text-muted">album type:{{album[2]}}</small>
         </div>
     </div>
     {% endfor%}

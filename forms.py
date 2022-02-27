@@ -24,10 +24,18 @@ class LoginForm(FlaskForm):
 class artistLoginForm(FlaskForm):
     name = StringField(label='name', validators=[DataRequired()])
     submit =SubmitField(label='Login')
-
 class HomepageForm(FlaskForm):
     search = StringField (label='search', validators=[DataRequired()])
     submit =SubmitField(label='search')
 class artisthomepageForm(FlaskForm):
+    search = StringField (label='search', validators=[DataRequired()])
+    submit =SubmitField(label='search')
+class artistclickForm(FlaskForm):
+    search = StringField (label='search', validators=[DataRequired()])
+    submit =SubmitField(label='search')
+class albumclickForm(FlaskForm):
+    search = StringField (label='search', validators=[DataRequired()])
+    submit =SubmitField(label='search')
+class trackclickForm(FlaskForm):
     search = StringField (label='search', validators=[DataRequired()])
     submit =SubmitField(label='search')

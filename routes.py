@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm
+from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm
 
 app=Flask(__name__)
 
@@ -99,13 +99,13 @@ def homepage():
     albums = []
     tracks = []
     
-    sql_famart="SELECT name, followers from artists order by followers desc limit 10"
-    sql_newrel="SELECT albums.name , artists.name , albums.name,  substring(albums.release_date,1,4) as release_year from albums join artists on albums.artist_id = artists.id order by substring(albums.release_date,1,4) desc limit 10"
+    sql_famart="SELECT artists.name, artists.followers from artists join albums on albums.artist_id=artists.id group by artists.id having COUNT(albums.id)>10 order by artists.followers desc limit 10"
+    sql_newrel="SELECT albums.name , substring(albums.release_date,1,4) as release_year from albums join artists on albums.artist_id = artists.id join tracks on tracks.album_id=albums.id group by albums.id having COUNT(albums.id)>10 order by substring(albums.release_date,1,4) desc limit 10"
     sql_poptracks="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on substring(tracks.artists_id, 3, LENGTH(tracks.artists_id)-4) = artists.id order by tracks.popularity desc limit 10"
-    sql_acc="Select albums.name , artists.name , albums.name from albums join artists on albums.artist_id = artists.id join (Select AVG(acousticness) as ac, album_id from tracks group by album_id ) as accou on albums.id=accou.album_id order by accou.ac limit 10"
-    sql_dance="Select albums.name , artists.name , albums.name from albums join artists on albums.artist_id = artists.id join (Select AVG(danceability) as ac, album_id from tracks group by album_id ) as accou on albums.id=accou.album_id order by accou.ac limit 10"
-    sql_live="Select albums.name , artists.name , albums.name from albums join artists on albums.artist_id = artists.id join (Select AVG(liveness) as ac, album_id from tracks group by album_id ) as accou on albums.id=accou.album_id order by accou.ac limit 10"
-    sql_loud="Select albums.name , artists.name , albums.name from albums join artists on albums.artist_id = artists.id join (Select AVG(loudness) as ac, album_id from tracks group by album_id ) as accou on albums.id=accou.album_id order by accou.ac limit 10"
+    sql_acc="select albums.name from (select temp.id from (Select albums.name, albums.id from albums join artists on albums.artist_id = artists.id join (Select AVG(acousticness) as ac, album_id from tracks group by album_id ) as accou on albums.id=accou.album_id order by accou.ac) as temp join tracks on tracks.album_id=temp.id group by temp.id having COUNT(album_id)>10) temp join albums on albums.id=temp.id limit 10"
+    sql_dance="select albums.name from (select temp.id from (Select albums.name, albums.id from albums join artists on albums.artist_id = artists.id join (Select AVG(danceability) as ac, album_id from tracks group by album_id ) as accou on albums.id=accou.album_id order by accou.ac) as temp join tracks on tracks.album_id=temp.id group by temp.id having COUNT(album_id)>10) temp join albums on albums.id=temp.id limit 10"
+    sql_live="select albums.name from (select temp.id from (Select albums.name, albums.id from albums join artists on albums.artist_id = artists.id join (Select AVG(liveness) as ac, album_id from tracks group by album_id ) as accou on albums.id=accou.album_id order by accou.ac) as temp join tracks on tracks.album_id=temp.id group by temp.id having COUNT(album_id)>10) temp join albums on albums.id=temp.id limit 10"
+    sql_loud="select albums.name from (select temp.id from (Select albums.name, albums.id from albums join artists on albums.artist_id = artists.id join (Select AVG(loudness) as ac, album_id from tracks group by album_id ) as accou on albums.id=accou.album_id order by accou.ac) as temp join tracks on tracks.album_id=temp.id group by temp.id having COUNT(album_id)>10) temp join albums on albums.id=temp.id limit 10"
 
     cur.execute(sql_famart)
     famous_artists = cur.fetchall()
@@ -190,12 +190,13 @@ def search():
     albums=request.args['albums']
     tracks=request.args['tracks']
     return render_template('search.html',title='search',form=form,artists = artists,albums=albums,tracks=tracks)
-'''
-@app.route('/artistclick', methods=['POST','GET'])
-def artistclick():
+
+@app.route('/artistclick/<string:a>', methods=['POST','GET'])
+def artistclick(a):
     conn=get_db_connection()
     cur=conn.cursor()
-    user_name=request.args['user_name']
+    user_name = a
+    form=artistclickForm()
     artist_id="select id from artists where name='{}'".format(user_name)
     sql_albums= """select albums.name,albums.total_tracks,albums.album_type,substring(albums.release_date,1,4) from artists join albums on albums.artist_id=artists.id
                  Where artists.name='{}'
@@ -203,25 +204,93 @@ def artistclick():
                  Limit 5""".format(user_name)
     cur.execute(sql_albums)
     albums=cur.fetchall()
-#    return render_template('search.html',title='search')
-@app.route('/albumclick', methods=['POST','GET'])
-def albumclick():
+    if form.validate_on_submit():
+        #print(form.search.data)
+        search_key=form.search.data
+        #sql_artists="SELECT name, followers from artists where name='{}'".format(search_key)
+        sql_artists="SELECT name, followers from artists where name like '%{}%' order by followers desc limit 10".format(search_key)
+        sql_albums="SELECT albums.name , artists.name , albums.name from albums join artists on albums.artist_id = artists.id where albums.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
+        sql_tracks="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on substring(tracks.artists_id, 3, LENGTH(tracks.artists_id)-4) = artists.id where tracks.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
+        cur.execute(sql_artists)
+        artists = cur.fetchall()
+        print("artists: ")
+        print(artists)
+        cur.execute(sql_albums)
+        albums=cur.fetchall()
+        print("albums: ")
+        print(albums)
+        cur.execute(sql_tracks)
+        tracks=cur.fetchall()
+        print("tracks: ")
+        print(tracks)
+        return render_template('search.html',form=form,artists = artists,albums=albums,tracks=tracks)
+    return render_template('artist.html',title=a,form=form,albums=albums,user_name=user_name)
+
+@app.route('/albumclick/<string:b>', methods=['POST','GET'])
+def albumclick(b):
     conn=get_db_connection()
     cur=conn.cursor()
-    album=request.args['album_id']
-    sql_details1="select * from tracks where name='{}'".format(album) #album details
-    sql_details2="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on substring(tracks.artists_id, 3, LENGTH(tracks.artists_id)-4) = artists.id where tracks.albums_id='{}' order by artists.followers desc limit 10".format(album)
-@app.route('/trackclick', methods=['POST','GET'])
-def trackclick():
+    album_name=b
+    form=albumclickForm()
+    sql_details1="select * from albums where name='{}'".format(album_name) 
+    sql_details2="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on substring(tracks.artists_id, 3, LENGTH(tracks.artists_id)-4) = artists.id join albums on albums.id=tracks.album_id where albums.name='{}' order by artists.followers desc limit 10".format(album_name)
+    cur.execute(sql_details1)
+    albums = cur.fetchall()
+    cur.execute(sql_details2)
+    tracks = cur.fetchall()
+    print(tracks)
+    if form.validate_on_submit():
+        #print(form.search.data)
+        search_key=form.search.data
+        #sql_artists="SELECT name, followers from artists where name='{}'".format(search_key)
+        sql_artists="SELECT name, followers from artists where name like '%{}%' order by followers desc limit 10".format(search_key)
+        sql_albums="SELECT albums.name , artists.name , albums.name from albums join artists on albums.artist_id = artists.id where albums.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
+        sql_tracks="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on substring(tracks.artists_id, 3, LENGTH(tracks.artists_id)-4) = artists.id where tracks.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
+        cur.execute(sql_artists)
+        artists = cur.fetchall()
+        print("artists: ")
+        print(artists)
+        cur.execute(sql_albums)
+        albums=cur.fetchall()
+        print("albums: ")
+        print(albums)
+        cur.execute(sql_tracks)
+        tracks=cur.fetchall()
+        print("tracks: ")
+        print(tracks)
+        return render_template('search.html',form=form,artists = artists,albums=albums,tracks=tracks)
+    return render_template('album.html',title=b,form=form,albums=albums,tracks=tracks,album_name=album_name)
+
+@app.route('/trackclick/<string:c>', methods=['POST','GET'])
+def trackclick(c):
     conn=get_db_connection()
     cur=conn.cursor()
-    track=request.args['track_name']
-    album=request.args['album_id']
-    sql_details= "select * from tracks where name='{}' and album_id='{}'".format(track,album)
+    form = trackclickForm()
+    track_name= c
+    sql_details= "select * from tracks where name='{}'".format(track_name)
     cur.execute(sql_details)
-    details=cur.fetchall()
-    print(details[0])
-  return #trackclick.html
-'''
+    tracks=cur.fetchall()
+    print(tracks[0])
+    if form.validate_on_submit():
+        #print(form.search.data)
+        search_key=form.search.data
+        #sql_artists="SELECT name, followers from artists where name='{}'".format(search_key)
+        sql_artists="SELECT name, followers from artists where name like '%{}%' order by followers desc limit 10".format(search_key)
+        sql_albums="SELECT albums.name , artists.name , albums.name from albums join artists on albums.artist_id = artists.id where albums.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
+        sql_tracks="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on substring(tracks.artists_id, 3, LENGTH(tracks.artists_id)-4) = artists.id where tracks.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
+        cur.execute(sql_artists)
+        artists = cur.fetchall()
+        print("artists: ")
+        print(artists)
+        cur.execute(sql_albums)
+        albums=cur.fetchall()
+        print("albums: ")
+        print(albums)
+        cur.execute(sql_tracks)
+        tracks=cur.fetchall()
+        print("tracks: ")
+        print(tracks)
+        return render_template('search.html',form=form,artists = artists,albums=albums,tracks=tracks)
+    return render_template('track.html',title=c,form=form,tracks=tracks,track_name=track_name)
 if __name__ == "__main__":
     app.run(debug=True)
