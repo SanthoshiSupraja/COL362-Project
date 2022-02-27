@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm
+from .forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm
 
 app=Flask(__name__)
 
@@ -80,6 +80,13 @@ def artistlogin():
     form=artistLoginForm()
     if form.validate_on_submit():
         user_name = form.name.data
+        sql="Select name from artists where name='{}'".format(user_name)
+        cur.execute(sql)
+        check=cur.fetchall()
+        if(len(check)>0):
+            print(check[0])
+            flash(f'Login successful for (form.username.data)', category="success")
+            return redirect(url_for('homepage'))
     return render_template('artistlogin.html',title='Login', form=form)
 @app.route('/homepage', methods=['POST','GET'])
 def homepage():
