@@ -1,52 +1,18 @@
 {% extends 'layouts.html'%} {% block content %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Euphony</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Options
-            </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{{url_for('createalbum',user_name = user_name,artist_id=artist_id)}}">create album</a></li>
-                        <li><a class="dropdown-item" href="#">delete album</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </li>
-            </ul>
+<div class="container w-50">
+    <form method="POST" action="">
+        <!--{{ form.csrf_token }}-->
+        {{form.hidden_tag()}}
+        <fieldset>
+            <legend class="border-bottom mb-4">Delete Album</legend>
+            <div class="form-group">
+                {{form.search.label(class="form-control-label")}} {%if form.search.errors%} {{form.search(class="form-control form-control-lg is-invalid")}} {%for error in form.search.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.search(class="form-control form-control-lg")}} {%endif%}
+            </div>
+        </fieldset>
+        <div class="field-group mt-4">
+            {{form.submit(class = 'btn btn-primary')}}
         </div>
-    </div>
-</nav>
-{% endblock content %}{% block contentS %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Name:{{user_name}}</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-</nav>
-<div class="card-group">
-    {% for album in albums %}
-    <div class="card border-dark mb-3" style="width: 18rem;">
-        <div class="card-body1">
-            <a href="{{url_for('albumclick',b=album[0])}}" class="btn btn-secondary">{{album[0]}}</a>
-        </div>
-        <div class="card-footer">
-            <small class="text-muted">album type:{{album[2]}}</small>
-        </div>
-    </div>
-    {% endfor%}
+    </form>
 </div>
-{% endblock contentS %}
+{% endblock content %}

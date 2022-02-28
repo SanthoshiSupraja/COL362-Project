@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField,IntegerField
+from wtforms import StringField, PasswordField, SubmitField,IntegerField,DecimalField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
 
 class DashboardForm(FlaskForm):
@@ -36,6 +36,9 @@ class artistclickForm(FlaskForm):
 class albumclickForm(FlaskForm):
     search = StringField (label='search', validators=[DataRequired()])
     submit =SubmitField(label='search')
+class artistalbumclickForm(FlaskForm):
+    search = StringField (label='search', validators=[DataRequired()])
+    submit =SubmitField(label='search')
 class trackclickForm(FlaskForm):
     search = StringField (label='search', validators=[DataRequired()])
     submit =SubmitField(label='search')
@@ -47,7 +50,17 @@ class createalbum1(FlaskForm):
    release_date = StringField(label='Release year',validators=[DataRequired()])
    total_tracks = IntegerField(label='Total tracks',validators=[DataRequired()])
    submit =SubmitField(label='submit')
-   
+
 class deleteForm(FlaskForm):
     search = StringField (label='search', validators=[DataRequired()])
+    submit =SubmitField(label='search')
+
+class addtrackForm(FlaskForm):
+    acousticness = DecimalField(label='acousticness', validators=[DataRequired()])
+    danceability = DecimalField(label='danceability', validators=[DataRequired()])
+    duration_ms = IntegerField(label='duration_ms', validators=[DataRequired()])
+    id = StringField(label='TrackId',validators=[DataRequired()])
+    liveness = DecimalField(label='liveness', validators=[DataRequired()])
+    loudness = DecimalField(label='loudness', validators=[DataRequired()])
+    name = StringField(label='name', validators=[DataRequired()])
     submit =SubmitField(label='search')

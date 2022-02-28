@@ -1,0 +1,47 @@
+{% extends 'layouts.html'%} {% block content %}
+<div class="container w-50">
+    <form method="POST" action="">
+        <!--{{ form.csrf_token }}-->
+        {{form.hidden_tag()}}
+        <fieldset>
+            <legend class="border-bottom mb-4">Create Album</legend>
+
+            <div class="form-group">
+                {{form.acousticness.label(class="form-control-label")}} {%if form.acousticness.errors%} {{form.acousticness(class="form-control form-control-lg is-invalid")}} {%for error in form.acousticness.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.acousticness(class="form-control form-control-lg")}} {%endif%}
+            </div>
+
+            <div class="form-group">
+                {{form.danceability.label(class="form-control-label")}} {%if form.danceability.errors%} {{form.danceability(class="form-control form-control-lg is-invalid")}} {%for error in form.danceability.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.danceability(class="form-control form-control-lg")}} {%endif%}
+            </div>
+
+            <div class="form-group">
+                {{form.duration_ms.label(class="form-control-label")}} {%if form.duration_ms.errors%} {{form.duration_ms(class="form-control form-control-lg is-invalid")}} {%for error in form.duration_ms.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.duration_ms(class="form-control form-control-lg")}} {%endif%}
+            </div>
+
+            <div class="form-group">
+                {{form.id.label(class="form-control-label")}} {%if form.id.errors%} {{form.id(class="form-control form-control-lg is-invalid")}} {%for error in form.id.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.id(class="form-control form-control-lg")}} {%endif%}
+            </div>
+            <div class="form-group">
+                {{form.liveness.label(class="form-control-label")}} {%if form.liveness.errors%} {{form.liveness(class="form-control form-control-lg is-invalid")}} {%for error in form.liveness.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.liveness(class="form-control form-control-lg")}} {%endif%}
+            </div>
+            <div class="form-group">
+                {{form.loudness.label(class="form-control-label")}} {%if form.loudness.errors%} {{form.loudness(class="form-control form-control-lg is-invalid")}} {%for error in form.loudness.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.loudness(class="form-control form-control-lg")}} {%endif%}
+            </div>
+            <div class="form-group">
+                {{form.name.label(class="form-control-label")}} {%if form.name.errors%} {{form.name(class="form-control form-control-lg is-invalid")}} {%for error in form.name.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.name(class="form-control form-control-lg")}} {%endif%}
+            </div>
+
+        </fieldset>
+        <div class="field-group mt-4">
+            {{form.submit(class = 'btn btn-primary')}}
+        </div>
+    </form>
+</div>
+{% endblock content %}
