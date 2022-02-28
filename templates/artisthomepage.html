@@ -28,15 +28,25 @@
                 </li>
             </ul>
         </div>
-        <form method="POST" action="">
-            {{form.hidden_tag()}}
-            <div class="form_wrapper">
-                {{form.search(class="form-control mr-sm-2")}}
-            </div>
-            <div class="form_wrapper">
-                {{form.submit(class = 'btn btn-outline-success my-2 my-sm-0')}}
-            </div>
-        </form>
     </div>
 </nav>
-{% endblock content %}
+{% endblock content %}{% block contentS %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Name:{{user_name}}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for album in albums %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="{{url_for('albumclick',b=album[0])}}" class="btn btn-secondary">{{album[0]}}</a>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">album type:{{album[2]}}</small>
+        </div>
+    </div>
+    {% endfor%}
+</div>
+{% endblock contentS %}

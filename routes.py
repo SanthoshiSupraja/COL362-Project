@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from .forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm
+from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm
 
 app=Flask(__name__)
 
@@ -134,7 +134,6 @@ def homepage():
         #sql_artists="SELECT name, followers from artists where name='{}'".format(search_key)
         sql_artists="SELECT name, followers from artists where name like '%{}%' order by followers desc limit 10".format(search_key)
         sql_albums="SELECT albums.name , artists.name , albums.name from albums join artists on albums.artist_id = artists.id join tracks on tracks.album_id=albums.id where albums.name like '%{}%' group by albums.id, artists.name having COUNT(albums.id)>10 limit 10".format(search_key)
-        #SELECT albums.name , substring(albums.release_date,1,4) as release_year from albums join artists on albums.artist_id = artists.id join tracks on tracks.album_id=albums.id group by albums.id having COUNT(albums.id)>5 order by substring(albums.release_date,1,4) desc limit 10
         sql_tracks="select tracks.duration_ms , tracks.name , artists.name from public.tracks join public.artists on substring(tracks.artists_id, 3, LENGTH(tracks.artists_id)-4) = artists.id where tracks.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
         cur.execute(sql_artists)
         artists = cur.fetchall()
@@ -182,7 +181,7 @@ def artisthomepage():
         cur.execute(sql_insalbum)
         cur.commit()
     '''
-    return render_template('artisthomepage.html',title='ArtistHomepage',form=form)
+    return render_template('artisthomepage.html',title='ArtistHomepage',form=form,albums=albums,user_name=user_name)
     #return render_template('homepage.html',title='Homepage')#,form=form,artists = artists,albums=albums,tracks=tracks)
 @app.route('/search', methods=['POST','GET'])
 def search():
