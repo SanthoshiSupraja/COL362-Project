@@ -1,0 +1,40 @@
+{% extends 'layouts.html'%} {% block content %}
+<div class="container w-50">
+    <form method="POST" action="">
+        <!--{{ form.csrf_token }}-->
+        {{form.hidden_tag()}}
+        <fieldset>
+            <legend class="border-bottom mb-4">Create Album</legend>
+
+            <div class="form-group">
+                {{form.album_type.label(class="form-control-label")}} {%if form.album_type.errors%} {{form.album_type(class="form-control form-control-lg is-invalid")}} {%for error in form.album_type.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.album_type(class="form-control form-control-lg")}} {%endif%}
+            </div>
+
+            <div class="form-group">
+                {{form.album_id.label(class="form-control-label")}} {%if form.album_id.errors%} {{form.album_id(class="form-control form-control-lg is-invalid")}} {%for error in form.album_id.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.album_id(class="form-control form-control-lg")}} {%endif%}
+            </div>
+
+            <div class="form-group">
+                {{form.name.label(class="form-control-label")}} {%if form.name.errors%} {{form.name(class="form-control form-control-lg is-invalid")}} {%for error in form.name.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.name(class="form-control form-control-lg")}} {%endif%}
+            </div>
+
+            <div class="form-group">
+                {{form.release_date.label(class="form-control-label")}} {%if form.release_date.errors%} {{form.release_date(class="form-control form-control-lg is-invalid")}} {%for error in form.release_date.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.release_date(class="form-control form-control-lg")}} {%endif%}
+            </div>
+            <div class="form-group">
+                {{form.total_tracks.label(class="form-control-label")}} {%if form.total_tracks.errors%} {{form.total_tracks(class="form-control form-control-lg is-invalid")}} {%for error in form.total_tracks.errors%}
+                <span>{{error}}</span> {%endfor%} {%else%} {{form.total_tracks(class="form-control form-control-lg")}} {%endif%}
+            </div>
+
+
+        </fieldset>
+        <div class="field-group mt-4">
+            {{form.submit(class = 'btn btn-primary')}}
+        </div>
+    </form>
+</div>
+{% endblock content %}

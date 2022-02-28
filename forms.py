@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField,IntegerField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
 
 class DashboardForm(FlaskForm):
@@ -39,3 +39,11 @@ class albumclickForm(FlaskForm):
 class trackclickForm(FlaskForm):
     search = StringField (label='search', validators=[DataRequired()])
     submit =SubmitField(label='search')
+
+class createalbum1(FlaskForm):
+   album_type = StringField(label='AlbumType',validators=[DataRequired()])
+   album_id = StringField(label='AlbumId',validators=[DataRequired()])
+   name = StringField(label='name', validators=[DataRequired()])
+   release_date = StringField(label='Release year',validators=[DataRequired()])
+   total_tracks = IntegerField(label='Total tracks',validators=[DataRequired()])
+   submit =SubmitField(label='submit')

@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm
+from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm,createalbum1
 
 app=Flask(__name__)
 
@@ -150,12 +150,15 @@ def homepage():
         return render_template('search.html',form=form,artists = artists,albums=albums,tracks=tracks)
     return render_template('homepage.html',title='Homepage',form=form,artists = artists,albums=albums,tracks=tracks,famous_artists = famous_artists,new_releases=new_releases,popular_tracks=popular_tracks,acousticness=acousticness,danceability=danceability,liveness=liveness,loudness=loudness)
 
+artist_id = ""
 @app.route('/artisthomepage', methods=['POST','GET'])
 def artisthomepage():
     conn=get_db_connection()
     cur=conn.cursor()
     user_name=request.args['user_name']
-    artist_id="select id from artists where name='{}'".format(user_name)
+    artistid="select id from artists where name='{}'".format(user_name)
+    cur.execute(artistid)
+    artist_id=cur.fetchone()
     sql_albums= """select albums.name,albums.total_tracks,albums.album_type,substring(albums.release_date,1,4) from artists join albums on albums.artist_id=artists.id
                  Where artists.name='{}'
                  Order by substring(albums.release_date,1,4) desc
@@ -165,24 +168,28 @@ def artisthomepage():
     print("albums: ")
     print(albums)
     form=artisthomepageForm()
-    #should add search
-    '''
-    form=CreateAlbum()
+    #form=createalbum()
+    
+    return render_template('artisthomepage.html',title='ArtistHomepage',form=form,albums=albums,user_name=user_name,artist_id= artist_id)
+    #return render_template('homepage.html',title='Homepage')#,form=form,artists = artists,albums=albums,tracks=tracks)
+@app.route('/createalbum', methods=['POST','GET'])
+def createalbum():
+    form = createalbum1()
+    conn=get_db_connection()
+    cur=conn.cursor()
+    #user_name=request.args['user_name']
+    #artist_id=request.args['artist_id']
     if(form.validate_on_submit()):
-        #(type, artist_id, name, release_date, total_tracks, track_name_prev)
         album_type=form.album_type.data
+        album_id = form.album_id.data
         name=form.name.data
         release_date=form.release_date.data
-        release_date=form.release_date.data
         total_tracks=form.total_tracks.data
-        track_name_prev=form.track_name_prev.data
-
-        sql_insalbum="INSERT INTO albums (album_type, artist_id, name, release_date, total_tracks, track_name_prev) VALUES (album_type, artist_id, name, release_date, total_tracks, track_name_prev)"
+        sql_insalbum="INSERT INTO albums (album_type,artist_id,id,name,release_date, total_tracks) VALUES ('{}', '{}','{}','{}','{}',{}) ".format(album_type, artist_id,album_id,name, release_date, total_tracks)
         cur.execute(sql_insalbum)
-        cur.commit()
-    '''
-    return render_template('artisthomepage.html',title='ArtistHomepage',form=form,albums=albums,user_name=user_name)
-    #return render_template('homepage.html',title='Homepage')#,form=form,artists = artists,albums=albums,tracks=tracks)
+        return redirect(url_for('artisthomepage'))
+    return render_template('createalbum.html',title='Create Album',form=form)
+
 @app.route('/search', methods=['POST','GET'])
 def search():
     form=request.args['form']
