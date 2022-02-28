@@ -7,15 +7,6 @@
       </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{url_for('dashboard')}}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Account</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
             </ul>
         </div>
     </div>
@@ -33,14 +24,13 @@
 </nav>
 <script src="{{url_for('static',filename = 'main.js')}}"></script>
 {% endblock content %} {% block contentC%}
-<div class="card text-center">
-    <h5 class="card-header">Signup Today!</h5>
+<div class="card text-center bg-dark">
     <div class="card-body">
-        <h6 class="card-title">Music you need at all times!!</h6>
+        <h6>Music you need at all times!!</h6>
         <p class="card-text">10M+ Tracks</p>
         <p class="card-text">10K+ Artists</p>
         <p class="card-text">100K+ Albums</p>
-        <a href="{{url_for('register')}}" class="btn btn-primary">SignUp</a>
+        <a href="{{url_for('register')}}" class="btn btn-primary">Get Euphony</a>
     </div>
 </div>
 {%endblock contentC %}{% block contentI%}
@@ -53,7 +43,7 @@
             <img src="{{url_for('static',filename='theme_pics/music1.jpg')}}" class="d-block w-100" alt="...">
         </div>
         <div class="carousel-item">
-            <img src="{{url_for('static',filename='theme_pics/music2.jpg')}}" class="d-block w-100" alt="...">
+            <img src="{{url_for('static',filename='theme_pics/music3.jpg')}}" class="d-block w-100" alt="...">
         </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
