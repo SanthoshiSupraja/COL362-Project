@@ -47,3 +47,7 @@ class createalbum1(FlaskForm):
    release_date = StringField(label='Release year',validators=[DataRequired()])
    total_tracks = IntegerField(label='Total tracks',validators=[DataRequired()])
    submit =SubmitField(label='submit')
+   
+class deleteForm(FlaskForm):
+    search = StringField (label='search', validators=[DataRequired()])
+    submit =SubmitField(label='search')
