@@ -1,0 +1,134 @@
+{% extends 'layouts.html'%} {% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Euphony</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{url_for('homepage')}}">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Account
+            </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{url_for('changepassword')}}">change password</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="{{url_for('dashboard')}}">Sign out</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <form method="POST" action="">
+            {{form.hidden_tag()}}
+            <div class="form_wrapper">
+                {{form.search(class="form-control mr-sm-2")}}
+            </div>
+            <div class="form_wrapper">
+                {{form.submit(class = 'btn btn-outline-success my-2 my-sm-0')}}
+            </div>
+        </form>
+    </div>
+</nav>
+{% endblock content %} {% block contentS %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">New releases</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for newreleases in new_releases %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="d-flex flex-column card-body1">
+            <a href="{{url_for('albumclick',b=newreleases[1])}}" class="btn btn-secondary">{{newreleases[1]}}</a>
+            <img src={{newreleases[5]}} class="card-image" />
+        </div>
+    </div>
+    {% endfor%}
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Famous artists</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for famousartist in famous_artists %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="{{url_for('artistclick',a=famousartist[0])}}" class="btn btn-secondary">{{famousartist[0]}}</a>
+        </div>
+    </div>
+    {% endfor%}
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Popular tracks</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for populartrack in popular_tracks %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="{{url_for('trackclick',c=populartrack[2])}}" class="btn btn-secondary">{{populartrack[2]}}</a>
+            <img src={{populartrack[11]}} class="card-image" />
+        </div>
+    </div>
+    {% endfor%}
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Chill vibes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for vibe in acousticness %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="{{url_for('albumclick',b=vibe[1])}}" class="btn btn-secondary">{{vibe[1]}}</a>
+            <img src={{vibe[6]}} class="card-image" />
+        </div>
+    </div>
+    {% endfor%}
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Best Dance music</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for dm in danceability %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="{{url_for('albumclick',b=dm[1])}}" class="btn btn-secondary">{{dm[1]}}</a>
+            <img src={{dm[6]}} class="card-image" />
+        </div>
+    </div>
+    {% endfor%}
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Masssss</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for ld in loudness %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body1">
+            <a href="{{url_for('albumclick',b=ld[1])}}" class="btn btn-secondary">{{ld[1]}}</a>
+            <img src={{ld[6]}} class="card-image" />
+        </div>
+    </div>
+    {% endfor%}
+</div>
+{% endblock contentS %}

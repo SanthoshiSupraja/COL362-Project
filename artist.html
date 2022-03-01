@@ -1,0 +1,60 @@
+{% extends 'layouts.html'%} {% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Euphony</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{url_for('homepage')}}">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Account
+            </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">change password</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="{{url_for('dashboard')}}">Sign out</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <form method="POST" action="">
+            {{form.hidden_tag()}}
+            <div class="form_wrapper">
+                {{form.search(class="form-control mr-sm-2")}}
+            </div>
+            <div class="form_wrapper">
+                {{form.submit(class = 'btn btn-outline-success my-2 my-sm-0')}}
+            </div>
+        </form>
+    </div>
+</nav>
+{% endblock content %} {% block contentS %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Artist name:{{user_name}}</a>
+    <a class="navbar-brand" href="#">Artist popularity:{{artist[0][0]}}</a>
+    <a class="navbar-brand" href="#">Artist followers:{{artist[0][1]}}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="card-group">
+    {% for album in albums %}
+    <div class="card border-dark mb-3" style="min-width: 18rem;max-width: 20rem; margin-top:5px;">
+        <div class="card-body1">
+            <a href="{{url_for('albumclick',b=album[1])}}" class="btn btn-secondary">{{album[1]}}</a>
+            <img src={{album[6]}} class="card-image" />
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">album type:{{album[0]}}</small>
+        </div>
+    </div>
+    {% endfor%}
+</div>
+{% endblock contentS %}

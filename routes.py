@@ -173,19 +173,44 @@ def homepage():
         album=tuple(alb)
         popular_tracks[count4]=album
         count4=count4+1
-        
+       
     if form.validate_on_submit():
         search_key=form.search.data
         #sql_artists="SELECT name, followers from artists where name='{}'".format(search_key)
         sql_artists="select name, followers, artist_popularity, genres from artists where name like '%{}%' order by followers desc limit 10".format(search_key)
         sql_albums="select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from albums join artists on albums.artist_id = artists.id join tracks on tracks.album_id=albums.id where albums.name like '%{}%' group by albums.id, artists.name having COUNT(albums.id)>10 limit 10".format(search_key)
-        sql_tracks="select artists.name, albums.name, tracks.name, tracks.acousticness, tracks.danceability, tracks.duration_ms ,  tracks.liveness, tracks.loudness, tracks.popularity, tracks.preview_url as url from tracks join albums on albums.id=tracks.album_id join artists on albums.artist_id = artists.id where tracks.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
+        sql_tracks="select artists.name, albums.name, tracks.name, tracks.acousticness, tracks.danceability, tracks.duration_ms ,  tracks.liveness, tracks.loudness, tracks.popularity, tracks.preview_url as url, albums.images from tracks join albums on albums.id=tracks.album_id join artists on albums.artist_id = artists.id where tracks.name like '%{}%' order by artists.followers desc limit 10".format(search_key)
         cur.execute(sql_artists)
         artists = cur.fetchall()
         cur.execute(sql_albums)
         albums=cur.fetchall()
+        count=0
+        for album in albums:
+           inp=album[5]
+           cut=inp[1:-1]
+           arr=cut.split(",")
+           url=arr[1][9:-1]
+           #album.append(url)  
+           alb=list(album)
+           alb.append(url)
+           album=tuple(alb)
+           albums[count]=album
+           count=count+1
+    
         cur.execute(sql_tracks)
         tracks=cur.fetchall()
+        count=0
+        for album in tracks:
+           inp=album[10]
+           cut=inp[1:-1]
+           arr=cut.split(",")
+           url=arr[1][9:-1]
+           #album.append(url)  
+           alb=list(album)
+           alb.append(url)
+           album=tuple(alb)
+           tracks[count]=album
+           count=count+1
         return render_template('search.html',form=form,artists = artists,albums=albums,tracks=tracks)
     return render_template('homepage.html',title='Homepage',form=form,artists = artists,albums=albums,tracks=tracks,famous_artists = famous_artists,new_releases=new_releases,popular_tracks=popular_tracks,acousticness=acousticness,danceability=danceability,liveness=liveness,loudness=loudness)
 
@@ -289,9 +314,9 @@ def search():
 
 @app.route('/artistclick/<string:a>', methods=['POST','GET'])
 def artistclick(a):
+    #print("a: ",a)
     conn=get_db_connection()
     cur=conn.cursor()
-    print("a: ",a)
     user_name = a
     form=artistclickForm()
     art="select artist_popularity,followers from artists where name='{}'".format(user_name)
@@ -300,6 +325,19 @@ def artistclick(a):
     sql_albums= "select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from artists join albums on albums.artist_id=artists.id where artists.name='{}' order by substring(albums.release_date,1,4) desc".format(user_name)
     cur.execute(sql_albums)
     albums=cur.fetchall()
+    count3=0
+    for album in albums:
+        inp=album[5]
+        cut=inp[1:-1]
+        arr=cut.split(",")
+        url=arr[1][9:-1]
+        #album.append(url)  
+        alb=list(album)
+        alb.append(url)
+        album=tuple(alb)
+        albums[count3]=album
+        count3=count3+1
+    #print("b: ",a)
     if form.validate_on_submit():
         search_key=form.search.data
         #sql_artists="SELECT name, followers from artists where name='{}'".format(search_key)
@@ -313,6 +351,7 @@ def artistclick(a):
         cur.execute(sql_tracks)
         tracks=cur.fetchall()
         return render_template('search.html',form=form,artists = artists,albums=albums,tracks=tracks)
+    
     return render_template('artist.html',title=a,form=form,albums=albums,user_name=user_name,artist=artist)
 
 @app.route('/albumclick/<string:b>', methods=['POST','GET'])
