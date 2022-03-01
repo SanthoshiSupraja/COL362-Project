@@ -47,6 +47,7 @@
     <div class="card border-dark mb-3" style="width: 18rem;">
         <div class="card-body1">
             <a href="{{url_for('trackclick',c=track[2])}}" class="btn btn-secondary">{{track[2]}}</a>
+            <img src={{track[11]}} class="card-image" />
         </div>
     </div>
     {% endfor%}
@@ -62,6 +63,7 @@
     <div class="card border-dark mb-3" style="width: 18rem;">
         <div class="card-body1">
             <a href="{{url_for('albumclick',b=album[1])}}" class="btn btn-secondary">{{album[1]}}</a>
+            <img src={{album[6]}} class="card-image" />
         </div>
     </div>
     {% endfor%}
