@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm,createalbum1,deleteForm,artistalbumclickForm,addtrackForm
+from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm,createalbum1,deleteForm,artistalbumclickForm,addtrackForm,deleteTrackForm,changePasswordForm,changeUsernameForm
 
 app=Flask(__name__)
 
@@ -85,12 +85,12 @@ def homepage():
     tracks = []
     
     sql_famart="select artists.name, artists.followers, artists.artist_popularity, artists.genres from artists join albums on albums.artist_id=artists.id group by artists.id having COUNT(albums.id)>10 order by artists.followers desc limit 10"
-    sql_newrel="select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from albums join artists on albums.artist_id = artists.id join tracks on tracks.album_id=albums.id group by albums.id having COUNT(albums.id)>10 order by substring(albums.release_date,1,4) desc limit 10"
+    sql_newrel="select albums.album_type, albums.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from albums join artists on albums.artist_id = artists.id join tracks on tracks.album_id=albums.id group by albums.id having COUNT(albums.id)>10 order by substring(albums.release_date,1,4) desc limit 10"
     sql_poptracks="select artists.name, albums.name, tracks.name, tracks.acousticness, tracks.danceability, tracks.duration_ms ,  tracks.liveness, tracks.loudness, tracks.popularity, tracks.preview_url as url from public.tracks join albums on albums.id= tracks.album_id join public.artists on albums.artist_id= artists.id order by tracks.popularity desc limit 10"
-    sql_acc="select albums.album_type, albums.name, artists.name, artists.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(acousticness) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
-    sql_dance="select albums.album_type, albums.name, artists.name, artists.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(danceability) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
-    sql_live="select albums.album_type, albums.name, artists.name, artists.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(liveness) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
-    sql_loud="select albums.album_type, albums.name, artists.name, artists.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(loudness) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
+    sql_acc="select albums.album_type, albums.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(acousticness) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
+    sql_dance="select albums.album_type, albums.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(danceability) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
+    sql_live="select albums.album_type, albums.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(liveness) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
+    sql_loud="select albums.album_type, albums.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(loudness) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
 
     cur.execute(sql_famart)
     famous_artists = cur.fetchall()
@@ -267,7 +267,7 @@ def artistalbumclick(b):
     cur=conn.cursor()
     album_name=b
     form=artistalbumclickForm()
-    sql_details1="select * from albums where name='{}'".format(album_name) 
+    sql_details1="select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from artists join albums on albums.artist_id=artists.id where albums.name='{}'".format(album_name) 
     sql_details2="select tracks.duration_ms , tracks.name , artists.name from tracks join albums on albums.id=tracks.album_id join artists on albums.artist_id= artists.id where albums.name='{}' order by artists.followers desc limit 10".format(album_name)
     cur.execute(sql_details1)
     albums = cur.fetchall()
@@ -295,7 +295,7 @@ def trackclick(c):
     cur=conn.cursor()
     form = trackclickForm()
     track_name= c
-    sql_details= "select * from tracks where name='{}'".format(track_name)
+    sql_details= "select artists.name, albums.name, tracks.name, tracks.acousticness, tracks.danceability, tracks.duration_ms ,  tracks.liveness, tracks.loudness, tracks.popularity, tracks.preview_url as url from public.tracks join albums on albums.id= tracks.album_id join public.artists on albums.artist_id= artists.id where tracks.name='{}'".format(track_name)
     cur.execute(sql_details)
     tracks=cur.fetchall()
     if form.validate_on_submit():
@@ -312,5 +312,63 @@ def trackclick(c):
         tracks=cur.fetchall()
         return render_template('search.html',form=form,artists = artists,albums=albums,tracks=tracks)
     return render_template('track.html',title=c,form=form,tracks=tracks,track_name=track_name)
+
+@app.route('/deletetrack',methods=['POST','GET'])
+def deletetrack():
+    form = deleteTrackForm()
+    conn=get_db_connection()
+    cur=conn.cursor()
+    user_name=request.args['user_name']
+    album_id=request.args['album_id']
+    if(form.validate_on_submit()):
+        del_track =  form.search.data
+        sql_deltrack="DELETE FROM tracks where name='{}' and album_id='{}'".format(del_track, album_id)
+        cur.execute(sql_deltrack)
+        conn.commit()
+        return redirect(url_for('artisthomepage',user_name=user_name))
+    return render_template('deletetrack.html',title='Delete Track',form=form)
+
+@app.route('/changepassword',methods=['POST','GET'])
+def changepassword():
+    form = changePasswordForm()
+    conn=get_db_connection()
+    cur=conn.cursor()
+    if(form.validate_on_submit()):
+        user_email=form.email.data
+        user_pwd=form.cur_pwd.data
+        new_pwd=form.new_pwd.data
+        sql_c="select password from users where emailid='{}'".format(emailid)
+        cur.execute(sql_c)
+        old=cur.fetchone()
+        if(old[0]!=user_pwd):
+           flash(f'Current password not correct', category='danger')
+           return 
+        sql="update users set password='{}' where emailid='{}'".format(new_pwd,user_email)
+        cur.execute(sql)
+        conn.commit()
+        return
+    return
+
+
+@app.route('/changeusername',methods=['POST','GET'])
+def changeusername():
+    form = changeUsernameForm()
+    conn=get_db_connection()
+    cur=conn.cursor()
+    if(form.validate_on_submit()):
+        user_email=form.email.data
+        user_pwd=form.cur_name.data
+        new_pwd=form.name_name.data
+        sql_c="select username from users where emailid='{}'".format(emailid)
+        cur.execute(sql_c)
+        old=cur.fetchone()
+        if(old[0]!=user_pwd):
+           flash(f'Current username not correct', category='danger')
+           return 
+        sql="update users set username='{}' where emailid='{}'".format(new_pwd,user_email)
+        cur.execute(sql)
+        conn.commit()
+        return
+    return
 if __name__ == "__main__":
     app.run(debug=True)
