@@ -38,10 +38,10 @@
     {% for album in albums %}
     <div class="card border-dark mb-3" style="width: 18rem;">
         <div class="card-body1">
-            <a href="{{url_for('artistalbumclick',b=album[0],artist_id=artist_id)}}" class="btn btn-secondary">{{album[0]}}</a>
+            <a href="{{url_for('artistalbumclick',b=album[1],artist_id=artist_id)}}" class="btn btn-secondary">{{album[1]}}</a>
         </div>
         <div class="card-footer">
-            <small class="text-muted">album type:{{album[2]}}</small>
+            <small class="text-muted">album type:{{album[0]}}</small>
         </div>
     </div>
     {% endfor%}

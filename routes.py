@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm,createalbum1,deleteForm,artistalbumclickForm,addtrackForm,deleteTrackForm,changePasswordForm,changeUsernameForm
+from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm,createalbum1,deleteForm,artistalbumclickForm,addtrackForm,deleteTrackForm,changePasswordForm
 
 app=Flask(__name__)
 
@@ -183,6 +183,7 @@ def addtrack():
     conn=get_db_connection()
     cur=conn.cursor()
     album_id=request.args['album_id']
+    #print(album_id)
     artist_id=request.args['artist_id']
     sql = "select name from artists where id='{}'".format(artist_id)
     cur.execute(sql)
@@ -267,7 +268,7 @@ def artistalbumclick(b):
     cur=conn.cursor()
     album_name=b
     form=artistalbumclickForm()
-    sql_details1="select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from artists join albums on albums.artist_id=artists.id where albums.name='{}'".format(album_name) 
+    sql_details1="select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images,albums.id from artists join albums on albums.artist_id=artists.id where albums.name='{}'".format(album_name) 
     sql_details2="select tracks.duration_ms , tracks.name , artists.name from tracks join albums on albums.id=tracks.album_id join artists on albums.artist_id= artists.id where albums.name='{}' order by artists.followers desc limit 10".format(album_name)
     cur.execute(sql_details1)
     albums = cur.fetchall()
@@ -318,7 +319,10 @@ def deletetrack():
     form = deleteTrackForm()
     conn=get_db_connection()
     cur=conn.cursor()
-    user_name=request.args['user_name']
+    artist_id=request.args['artist_id']
+    sql = "select name from artists where id='{}'".format(artist_id)
+    cur.execute(sql)
+    user_name = cur.fetchone()
     album_id=request.args['album_id']
     if(form.validate_on_submit()):
         del_track =  form.search.data
@@ -334,41 +338,20 @@ def changepassword():
     conn=get_db_connection()
     cur=conn.cursor()
     if(form.validate_on_submit()):
-        user_email=form.email.data
+        user_email=form.emailid.data
         user_pwd=form.cur_pwd.data
         new_pwd=form.new_pwd.data
-        sql_c="select password from users where emailid='{}'".format(emailid)
+        sql_c="select password from users where emailid='{}'".format(user_email)
         cur.execute(sql_c)
         old=cur.fetchone()
         if(old[0]!=user_pwd):
            flash(f'Current password not correct', category='danger')
-           return 
+           return redirect(url_for('changepassword'))
         sql="update users set password='{}' where emailid='{}'".format(new_pwd,user_email)
         cur.execute(sql)
         conn.commit()
-        return
-    return
+        return redirect(url_for('homepage'))
+    return render_template('changepassword.html',title='Change Password',form=form)
 
-
-@app.route('/changeusername',methods=['POST','GET'])
-def changeusername():
-    form = changeUsernameForm()
-    conn=get_db_connection()
-    cur=conn.cursor()
-    if(form.validate_on_submit()):
-        user_email=form.email.data
-        user_pwd=form.cur_name.data
-        new_pwd=form.name_name.data
-        sql_c="select username from users where emailid='{}'".format(emailid)
-        cur.execute(sql_c)
-        old=cur.fetchone()
-        if(old[0]!=user_pwd):
-           flash(f'Current username not correct', category='danger')
-           return 
-        sql="update users set username='{}' where emailid='{}'".format(new_pwd,user_email)
-        cur.execute(sql)
-        conn.commit()
-        return
-    return
 if __name__ == "__main__":
     app.run(debug=True)

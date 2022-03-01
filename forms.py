@@ -73,8 +73,5 @@ class changePasswordForm(FlaskForm):
     emailid= StringField (label='Email',validators=[DataRequired(), Email()])
     cur_pwd= PasswordField (label='Current Password', validators=[DataRequired(), Length (min=6,max=16)])
     new_pwd= PasswordField (label='New Password', validators=[DataRequired(), Length (min=6,max=16)])
+    submit =SubmitField(label='submit')
 
-class changeUsernameForm(FlaskForm):
-    emailid= StringField (label='Email',validators=[DataRequired(), Email()])
-    cur_name= StringField(label='Current Username',validators=[DataRequired(), Length (min=3,max=20)])
-    new_name= StringField(label='New Username',validators=[DataRequired(), Length (min=3,max=20)])
