@@ -38,9 +38,10 @@
 </nav>
 <div class="card-group">
     {% for album in albums %}
-    <div class="card border-dark mb-3" style="width: 18rem;">
+    <div class="card border-dark mb-3" style="min-width: 18rem;max-width: 20rem; margin-top:5px;">
         <div class="card-body1">
             <a href="{{url_for('artistalbumclick',b=album[1],artist_id=artist_id)}}" class="btn btn-secondary">{{album[1]}}</a>
+            <img src={{album[6]}} class="card-image" />
         </div>
         <div class="card-footer">
             <small class="text-muted">album type:{{album[0]}}</small>

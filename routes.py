@@ -2,7 +2,7 @@
 import os
 import psycopg2
 from flask import Flask,flash, request, redirect, url_for, send_from_directory, render_template,session
-from forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm,createalbum1,deleteForm,artistalbumclickForm,addtrackForm,deleteTrackForm,changePasswordForm
+from .forms import RegistrationForm,LoginForm,DashboardForm,HomepageForm,artistLoginForm,artisthomepageForm,artistclickForm,albumclickForm,trackclickForm,createalbum1,deleteForm,artistalbumclickForm,addtrackForm,deleteTrackForm,changePasswordForm
 
 app=Flask(__name__)
 
@@ -86,7 +86,7 @@ def homepage():
     
     sql_famart="select artists.name, artists.followers, artists.artist_popularity, artists.genres from artists join albums on albums.artist_id=artists.id group by artists.id having COUNT(albums.id)>10 order by artists.followers desc limit 10"
     sql_newrel="select albums.album_type, albums.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from albums join artists on albums.artist_id = artists.id join tracks on tracks.album_id=albums.id group by albums.id having COUNT(albums.id)>10 order by substring(albums.release_date,1,4) desc limit 10"
-    sql_poptracks="select artists.name, albums.name, tracks.name, tracks.acousticness, tracks.danceability, tracks.duration_ms ,  tracks.liveness, tracks.loudness, tracks.popularity, tracks.preview_url as url from public.tracks join albums on albums.id= tracks.album_id join public.artists on albums.artist_id= artists.id order by tracks.popularity desc limit 10"
+    sql_poptracks="select artists.name, albums.name, tracks.name, tracks.acousticness, tracks.danceability, tracks.duration_ms ,  tracks.liveness, tracks.loudness, tracks.popularity, tracks.preview_url as url, albums.images from public.tracks join albums on albums.id= tracks.album_id join public.artists on albums.artist_id= artists.id order by tracks.popularity desc limit 10"
     sql_acc="select albums.album_type, albums.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(acousticness) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
     sql_dance="select albums.album_type, albums.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(danceability) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
     sql_live="select albums.album_type, albums.name, temp.count, temp.acou, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from (select album_id, AVG(liveness) as acou, COUNT(album_id) as count from tracks group by album_id) as temp join albums on albums.id=temp.album_id join artists on artists.id=albums.artist_id where temp.count>10 order by temp.acou limit 10;"
@@ -112,7 +112,68 @@ def homepage():
 
     cur.execute(sql_loud)
     loudness = cur.fetchall()
-
+    
+    count=0
+    for album in new_releases:
+        inp=album[4]
+        cut=inp[1:-1]
+        arr=cut.split(",")
+        url=arr[1][9:-1]
+        #album.append(url)  
+        alb=list(album)
+        alb.append(url)
+        album=tuple(alb)
+        new_releases[count]=album
+        count=count+1
+    count1=0
+    for album in acousticness:
+        inp=album[5]
+        cut=inp[1:-1]
+        arr=cut.split(",")
+        url=arr[1][9:-1]
+        #album.append(url)  
+        alb=list(album)
+        alb.append(url)
+        album=tuple(alb)
+        acousticness[count1]=album
+        count1=count1+1
+    count2=0
+    for album in danceability:
+        inp=album[5]
+        cut=inp[1:-1]
+        arr=cut.split(",")
+        url=arr[1][9:-1]
+        #album.append(url)  
+        alb=list(album)
+        alb.append(url)
+        album=tuple(alb)
+        danceability[count2]=album
+        count2=count2+1
+    count3=0
+    for album in loudness:
+        inp=album[5]
+        cut=inp[1:-1]
+        arr=cut.split(",")
+        url=arr[1][9:-1]
+        #album.append(url)  
+        alb=list(album)
+        alb.append(url)
+        album=tuple(alb)
+        loudness[count3]=album
+        count3=count3+1
+    count4=0
+    for album in popular_tracks:
+        inp=album[10]
+        cut=inp[1:-1]
+        arr=cut.split(",")
+        url=arr[1][9:-1]
+        #album.append(url)  
+        alb=list(album)
+        alb.append(url)
+        album=tuple(alb)
+        popular_tracks[count4]=album
+        count4=count4+1
+        
     if form.validate_on_submit():
         search_key=form.search.data
         #sql_artists="SELECT name, followers from artists where name='{}'".format(search_key)
@@ -143,6 +204,19 @@ def artisthomepage():
     sql_albums= "select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from artists join albums on albums.artist_id=artists.id where artists.name='{}' order by substring(albums.release_date,1,4) desc".format(user_name)
     cur.execute(sql_albums)
     albums=cur.fetchall()
+    count3=0
+    for album in albums:
+        inp=album[5]
+        cut=inp[1:-1]
+        arr=cut.split(",")
+        url=arr[1][9:-1]
+        #album.append(url)  
+        alb=list(album)
+        alb.append(url)
+        album=tuple(alb)
+        albums[count3]=album
+        count3=count3+1
+
     form=artisthomepageForm()
     return render_template('artisthomepage.html',title='ArtistHomepage',form=form,albums=albums,user_name=user_name,artist_id= artist_id,artista=artista)
     #return render_template('homepage.html',title='Homepage')#,form=form,artists = artists,albums=albums,tracks=tracks)
@@ -217,6 +291,7 @@ def search():
 def artistclick(a):
     conn=get_db_connection()
     cur=conn.cursor()
+    print("a: ",a)
     user_name = a
     form=artistclickForm()
     art="select artist_popularity,followers from artists where name='{}'".format(user_name)
@@ -274,7 +349,7 @@ def artistalbumclick(b):
     album_name=b
     form=artistalbumclickForm()
     sql_details1="select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images,albums.id from artists join albums on albums.artist_id=artists.id where albums.name='{}'".format(album_name) 
-    sql_details2="select tracks.duration_ms , tracks.name , artists.name from tracks join albums on albums.id=tracks.album_id join artists on albums.artist_id= artists.id where albums.name='{}' order by artists.followers desc limit 10".format(album_name)
+    sql_details2="select tracks.duration_ms , tracks.name , artists.name, tracks.preview_url from tracks join albums on albums.id=tracks.album_id join artists on albums.artist_id= artists.id where albums.name='{}' order by artists.followers desc limit 10".format(album_name)
     cur.execute(sql_details1)
     albums = cur.fetchall()
     cur.execute(sql_details2)
