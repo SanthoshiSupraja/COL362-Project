@@ -1,5 +1,5 @@
 {% extends 'layouts.html'%}{% block content %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Euphony</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -7,15 +7,9 @@
       </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{url_for('artisthomepage')}}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Account</a>
-                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
+              Options
             </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{{url_for('addtrack',album_id =albums[0][4],artist_id=artist_id)}}">Add track</a></li>
@@ -23,20 +17,10 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
+                        <li><a class="dropdown-item" href="{{url_for('dashboard')}}">Signout</a></li>
                 </li>
-            </ul>
+                </ul>
         </div>
-        <form method="POST" action="">
-            {{form.hidden_tag()}}
-            <div class="form_wrapper">
-                {{form.search(class="form-control mr-sm-2")}}
-            </div>
-            <div class="form_wrapper">
-                {{form.submit(class = 'btn btn-outline-success my-2 my-sm-0')}}
-            </div>
-        </form>
     </div>
 </nav>
 {% endblock content %} {% block contentS %}

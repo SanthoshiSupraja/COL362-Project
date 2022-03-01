@@ -22,7 +22,7 @@ class LoginForm(FlaskForm):
     submit =SubmitField(label='Login')
 
 class artistLoginForm(FlaskForm):
-    name = StringField(label='name', validators=[DataRequired()])
+    name = StringField(label='Name', validators=[DataRequired()])
     submit =SubmitField(label='Login')
 class HomepageForm(FlaskForm):
     search = StringField (label='search', validators=[DataRequired()])
