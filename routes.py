@@ -136,12 +136,15 @@ def artisthomepage():
     artistid="select id from artists where name='{}'".format(user_name)
     cur.execute(artistid)
     artist_id=cur.fetchone()
+    art="select artist_popularity,followers from artists where name='{}'".format(user_name)
+    cur.execute(art)
+    artista=cur.fetchall()
     #print(artist_id)
     sql_albums= "select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from artists join albums on albums.artist_id=artists.id where artists.name='{}' order by substring(albums.release_date,1,4) desc".format(user_name)
     cur.execute(sql_albums)
     albums=cur.fetchall()
     form=artisthomepageForm()
-    return render_template('artisthomepage.html',title='ArtistHomepage',form=form,albums=albums,user_name=user_name,artist_id= artist_id)
+    return render_template('artisthomepage.html',title='ArtistHomepage',form=form,albums=albums,user_name=user_name,artist_id= artist_id,artista=artista)
     #return render_template('homepage.html',title='Homepage')#,form=form,artists = artists,albums=albums,tracks=tracks)
 @app.route('/createalbum', methods=['POST','GET'])
 def createalbum():
@@ -216,7 +219,9 @@ def artistclick(a):
     cur=conn.cursor()
     user_name = a
     form=artistclickForm()
-    artist_id="select id from artists where name='{}'".format(user_name)
+    art="select artist_popularity,followers from artists where name='{}'".format(user_name)
+    cur.execute(art)
+    artist=cur.fetchall()
     sql_albums= "select albums.album_type, albums.name, artists.name, substring(albums.release_date,1,4) as release_year, substring(albums.external_url, 14, LENGTH(albums.external_url)-15) as url, albums.images from artists join albums on albums.artist_id=artists.id where artists.name='{}' order by substring(albums.release_date,1,4) desc".format(user_name)
     cur.execute(sql_albums)
     albums=cur.fetchall()
@@ -233,7 +238,7 @@ def artistclick(a):
         cur.execute(sql_tracks)
         tracks=cur.fetchall()
         return render_template('search.html',form=form,artists = artists,albums=albums,tracks=tracks)
-    return render_template('artist.html',title=a,form=form,albums=albums,user_name=user_name)
+    return render_template('artist.html',title=a,form=form,albums=albums,user_name=user_name,artist=artist)
 
 @app.route('/albumclick/<string:b>', methods=['POST','GET'])
 def albumclick(b):

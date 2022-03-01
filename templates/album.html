@@ -38,6 +38,7 @@
 {% endblock content %} {% block contentS %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Album name:{{album_name}}</a>
+    <a class="navbar-brand" href="#">Artist name:{{albums[0][2]}}</a>
     <a class="navbar-brand" href="#">Album type:{{albums[0][0]}}</a>
     <a class="navbar-brand" href="#">Released on:{{albums[0][3]}}</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +55,7 @@
     {% for track in tracks %}
     <div class="card border-dark mb-3" style="width: 18rem;">
         <div class="card-body1">
-            <a href="#" class="btn btn-secondary">{{track[1]}}</a>
+            <a href="{{url_for('trackclick',c=track[1])}}" class="btn btn-secondary">{{track[1]}}</a>
         </div>
     </div>
     {% endfor%}
