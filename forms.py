@@ -64,3 +64,17 @@ class addtrackForm(FlaskForm):
     loudness = DecimalField(label='loudness', validators=[DataRequired()])
     name = StringField(label='name', validators=[DataRequired()])
     submit =SubmitField(label='search')
+
+class deleteTrackForm(FlaskForm):
+    search = StringField (label='search', validators=[DataRequired()])
+    submit =SubmitField(label='search')
+
+class changePasswordForm(FlaskForm):
+    emailid= StringField (label='Email',validators=[DataRequired(), Email()])
+    cur_pwd= PasswordField (label='Current Password', validators=[DataRequired(), Length (min=6,max=16)])
+    new_pwd= PasswordField (label='New Password', validators=[DataRequired(), Length (min=6,max=16)])
+
+class changeUsernameForm(FlaskForm):
+    emailid= StringField (label='Email',validators=[DataRequired(), Email()])
+    cur_name= StringField(label='Current Username',validators=[DataRequired(), Length (min=3,max=20)])
+    new_name= StringField(label='New Username',validators=[DataRequired(), Length (min=3,max=20)])
